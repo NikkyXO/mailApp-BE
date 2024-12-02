@@ -25,7 +25,6 @@ export class SeederService {
       if (!exists) {
         const newUser = await this.userRepository.save(user);
         this.userTest = newUser;
-        console.log({ user: this.userTest });
       }
     }
   }
