@@ -13,22 +13,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  // app.enableCors();
-  app.enableCors({
-    origin: [
-      'https://mail-app-fe.vercel.app',
-      'http://localhost:5173',
-      'http://localhost:3000',
-    ],
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'Access-Control-Allow-Origin',
-      'Access-Control-Allow-Methods',
-    ],
-    credentials: true,
-  });
+  app.enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('Message Service')

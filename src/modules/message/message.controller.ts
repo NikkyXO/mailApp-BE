@@ -35,9 +35,9 @@ export class MessagesController {
     return this.messagesService.findOne(id);
   }
 
-  @Patch('mark-read')
+  @Get('mark-read/:id')
   @ApiOperation({ summary: 'Mark message as read' })
-  markAsRead(@Body() data: UpdateMessage) {
-    return this.messagesService.markAsRead(data.id);
+  markAsRead(@Param('id') id: string) {
+    return this.messagesService.markAsRead(id);
   }
 }
