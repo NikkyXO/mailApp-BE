@@ -24,11 +24,17 @@ export class MessageService {
   }
 
   findOne(id: string): Promise<Message> {
-    return this.messageRepo.findOne({ where: { id } });
+    return this.messageRepo.findOne({ _id: id });
   }
 
   async markAsRead(id: string) {
-    return await this.messageRepo.updateOne({ _id: id }, { read: true });
+    return await this.messageRepo.updateOne(
+      { _id: id },
+      { read: true },
+      {
+        new: true,
+      },
+    );
   }
 
   async findAllMessages() {
