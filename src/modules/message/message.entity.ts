@@ -1,22 +1,46 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
+import { Document } from 'mongoose';
+import { BaseEntity } from 'src/config/entities/entity.type';
 
-@Entity()
-export class Message {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export type UserDocument = Message & Document;
 
-  @Column()
+@Schema({
+  timestamps: true,
+  versionKey: undefined,
+  toJSON: {
+    getters: true,
+    aliases: true,
+    virtuals: true,
+  },
+})
+export class Message extends BaseEntity {
+  @Prop({
+    index: true,
+    unique: false,
+  })
+  @ApiProperty()
   username: string;
 
-  @Column()
+  @Prop({
+    required: true,
+  })
   subject: string;
 
-  @Column({ type: 'text' })
+  @Prop({
+    required: true,
+  })
   content: string;
 
-  @Column({ default: false })
+  @Prop({
+    default: false,
+  })
   read: boolean;
 
-  @Column()
+  @Prop({
+    required: true,
+  })
   userId: string;
 }
+
+export const MessageSchema = SchemaFactory.createForClass(Message);

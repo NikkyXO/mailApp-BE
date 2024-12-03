@@ -1,13 +1,32 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
+import { Document } from 'mongoose';
+import { BaseEntity } from 'src/config/entities/entity.type';
 
-@Entity()
-export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export type UserDocument = User & Document;
 
-  @Column({ unique: true })
+@Schema({
+  timestamps: true,
+  versionKey: undefined,
+  toJSON: {
+    getters: true,
+    aliases: true,
+    virtuals: true,
+  },
+})
+export class User extends BaseEntity {
+  @Prop({
+    index: true,
+    unique: true,
+  })
+  @ApiProperty()
   username: string;
 
-  @Column()
+  @Prop({
+    index: true,
+    unique: true,
+  })
   email: string;
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);

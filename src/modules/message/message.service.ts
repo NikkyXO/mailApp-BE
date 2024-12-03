@@ -1,22 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Message } from './message.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class MessageService {
   constructor(
-    @InjectRepository(Message)
-    private messageRepo: Repository<Message>,
+    @InjectModel(Message.name)
+    private messageRepo: Model<Message>,
   ) {}
 
   async findAll(userId: string, read?: boolean): Promise<Message[]> {
-    return await this.messageRepo.find({ where: { userId, read } });
+    return await this.messageRepo.find({ userId, read });
   }
 
   findMessageCount(userId: string, read?: boolean): Promise<number> {
-    if (!read) return this.messageRepo.count({ where: { userId } });
-    return this.messageRepo.count({ where: { userId, read } });
+    if (!read) return this.messageRepo.countDocuments({ userId });
+    return this.messageRepo.countDocuments({ userId, read });
   }
 
   findOne(id: string): Promise<Message> {
@@ -24,7 +24,7 @@ export class MessageService {
   }
 
   async markAsRead(id: string) {
-    return await this.messageRepo.update(id, { read: true });
+    return await this.messageRepo.updateOne({ _id: id }, { read: true });
   }
 
   async findAllMessages() {

@@ -1,32 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Message } from '../message/message.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class SeederService {
   userTest: any;
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    @InjectRepository(Message)
-    private readonly messageRepository: Repository<Message>,
+    @InjectModel(User.name)
+    private readonly userRepository: Model<User>,
+    @InjectModel(Message.name)
+    private readonly messageRepository: Model<Message>,
   ) {}
 
   async seedUsers() {
     console.log('seeding users');
-    const users = [{ username: 'John Doe', email: 'john@example.com' }];
+    const user = { username: 'John Doe', email: 'john@example.com' };
 
-    for (const user of users) {
-      const exists = await this.userRepository.findOne({
-        where: { email: user.email },
-      });
-      if (!exists) {
-        const newUser = await this.userRepository.save(user);
-        this.userTest = newUser;
-      }
+    const exists = await this.userRepository.findOne({ email: user.email });
+    if (!exists) {
+      const newUser = await this.userRepository.create(user);
+      await newUser.save();
+      this.userTest = newUser;
     }
+    this.userTest = exists;
   }
 
   async seedMessages() {
@@ -35,28 +33,31 @@ export class SeederService {
       const messages = [
         {
           subject: 'Welcome',
-          content: 'Welcome to the inbox application!',
+          content:
+            'Welcome to the inbox application!  You can start checking your messages.',
           read: false,
           username: this.userTest.username,
           userId: this.userTest.id,
         },
         {
           subject: 'Reminder',
-          content: 'Don’t forget to check your messages.',
+          content:
+            'Don’t forget to check your messages. This is a reminder message.',
           read: true,
           username: this.userTest.username,
           userId: this.userTest.id,
         },
         {
           subject: 'Question',
-          content: 'Can I get some help with this?',
+          content: 'Can I get some help with this? I have a question. Thanks.',
           read: false,
           username: this.userTest.username,
           userId: this.userTest.id,
         },
         {
           subject: 'Update',
-          content: 'We have updated our privacy policy.',
+          content:
+            'We have updated our privacy policy. Please check it out. Thanks.',
           read: false,
           username: this.userTest.username,
           userId: this.userTest.id,
@@ -72,10 +73,12 @@ export class SeederService {
 
       for (const message of messages) {
         const exists = await this.messageRepository.findOne({
-          where: { subject: message.subject, userId: this.userTest.id },
+          content: message.content,
+          userId: this.userTest.id,
         });
         if (!exists) {
-          await this.messageRepository.save(message);
+          const newMessage = await this.messageRepository.create(message);
+          await newMessage.save();
         }
       }
     }

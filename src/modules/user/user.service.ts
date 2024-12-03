@@ -3,21 +3,19 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectModel(User.name)
+    private readonly userRepository: Model<User>,
   ) {}
 
   async create(username: string, email: string): Promise<User> {
-    const existingUser = await this.userRepository.findOne({
-      where: { username },
-    });
+    const existingUser = await this.userRepository.findOne({ username });
     if (existingUser) {
       throw new ConflictException('Username already exists');
     }
@@ -27,11 +25,12 @@ export class UserService {
       email,
     });
 
-    return this.userRepository.save(user);
+    const newUser = await this.userRepository.create(user);
+    return await newUser.save();
   }
 
   async findOne(username: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { username } });
+    const user = await this.userRepository.findOne({ username });
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -39,7 +38,7 @@ export class UserService {
   }
 
   async findById(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ id });
     if (!user) {
       throw new NotFoundException('User not found');
     }

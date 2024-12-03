@@ -3,17 +3,27 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 import { MessageModule } from './modules/message/message.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { SeederService } from './modules/seeder/seeder.service';
 import { SeederModule } from './modules/seeder/seeder.module';
+import { configuration } from './config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: ':memory:',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      envFilePath: '.env',
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        return {
+          uri: configService.get<string>('mongoDBURI'),
+        };
+      },
+      inject: [ConfigService],
     }),
     UserModule,
     MessageModule,
