@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Message } from './message.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { QueryMessage } from 'src/config/entities/entity.type';
 
 @Injectable()
 export class MessageService {
@@ -10,8 +11,9 @@ export class MessageService {
     private messageRepo: Model<Message>,
   ) {}
 
-  async findAll(userId: string, read?: boolean): Promise<Message[]> {
-    return await this.messageRepo.find({ userId, read });
+  async findAll(data: QueryMessage): Promise<Message[]> {
+    const { userId } = data;
+    return await this.messageRepo.find({ userId });
   }
 
   findMessageCount(userId: string, read?: boolean): Promise<number> {

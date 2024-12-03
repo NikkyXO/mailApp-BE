@@ -9,8 +9,8 @@ export class MessagesController {
 
   @Get('/user')
   @ApiOperation({ summary: 'Get all user messages' })
-  findAll(@Query('userId') userId: string, @Query('read') read: boolean) {
-    return this.messagesService.findAll(userId, read);
+  findAll(@Query('userId') userId: string) {
+    return this.messagesService.findAll({ userId });
   }
 
   @Get()

@@ -18,3 +18,9 @@ export class BaseEntity {
   })
   deletedAt: Date;
 }
+
+export interface QueryMessage {
+  userId: string;
+  read?: boolean;
+  all?: boolean;
+}
