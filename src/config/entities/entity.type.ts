@@ -1,4 +1,5 @@
 import { Prop } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { Schema } from 'mongoose';
 import { v4 } from 'uuid';
 
@@ -23,4 +24,14 @@ export interface QueryMessage {
   userId: string;
   read?: boolean;
   all?: boolean;
+}
+
+export class UpdateMessage {
+  read?: boolean;
+
+  @ApiProperty({
+    required: true,
+    type: String,
+  })
+  id: string;
 }
