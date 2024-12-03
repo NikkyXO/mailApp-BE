@@ -13,14 +13,16 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  // app.enableCors({
-  //   origin: '*',
-  //   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
-  // });
+  // app.enableCors();
   app.enableCors({
-    origin: '*',
+    origin: [
+      'https://mail-app-fe.vercel.app',
+      'http://localhost:5173',
+      'http://localhost:3000',
+    ],
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
   });
 
   const config = new DocumentBuilder()
