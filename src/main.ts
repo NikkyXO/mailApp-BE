@@ -13,7 +13,9 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Message Service')
