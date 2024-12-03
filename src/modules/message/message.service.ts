@@ -15,8 +15,10 @@ export class MessageService {
   }
 
   findMessageCount(userId: string, read?: boolean): Promise<number> {
-    if (!read) return this.messageRepo.countDocuments({ userId });
     return this.messageRepo.countDocuments({ userId, read });
+  }
+  async getAllUserMessagesCount(userId: string): Promise<number> {
+    return await this.messageRepo.countDocuments({ userId });
   }
 
   findOne(id: string): Promise<Message> {

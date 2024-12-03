@@ -22,10 +22,10 @@ export class MessagesController {
   @Get('stats')
   @ApiOperation({ summary: 'Get messages statistics count' })
   async findMessageCount(@Query('userId') userId: string) {
-    const total = await this.messagesService.findAll(userId);
+    const total = await this.messagesService.getAllUserMessagesCount(userId);
     const unread = await this.messagesService.findMessageCount(userId, false);
-    const readCount = total.length - unread;
-    return { total: total.length, unread, readCount };
+    const readCount = await this.messagesService.findMessageCount(userId, true);
+    return { total: total, unread, readCount };
   }
 
   @Get(':id')
