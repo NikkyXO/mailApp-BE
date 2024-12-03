@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UpdateMessage } from 'src/config/entities/entity.type';
 
 @ApiTags('messages')
 @Controller('messages')
