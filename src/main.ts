@@ -13,9 +13,14 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+  // app.enableCors({
+  //   origin: '*',
+  //   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+  // });
   app.enableCors({
     origin: '*',
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   const config = new DocumentBuilder()
