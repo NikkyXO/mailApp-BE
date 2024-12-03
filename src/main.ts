@@ -21,7 +21,12 @@ async function bootstrap() {
       'http://localhost:3000',
     ],
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Access-Control-Allow-Origin',
+      'Access-Control-Allow-Methods',
+    ],
     credentials: true,
   });
 
