@@ -3,7 +3,7 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { User } from './user.entity';
+import { User, UserDocument } from './user.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { NewUserInput } from '../auth/dtos/auth.dto';
@@ -36,7 +36,7 @@ export class UserService {
     return await user.save();
   }
 
-  async findOne(email: string): Promise<User> {
+  async findOne(email: string): Promise<UserDocument> {
     const user = await this.userRepository.findOne({ email });
     if (!user) {
       throw new NotFoundException('User not found');
