@@ -20,7 +20,17 @@ async function bootstrap() {
     .setDescription('Message Service')
     .setVersion('1.0')
     .setContact('Nikky', 'nikky.co', 'developer@nikky.co')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Enter JWT Token',
+        in: 'header',
+      },
+      'JWT',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

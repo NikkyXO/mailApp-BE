@@ -6,6 +6,8 @@ import {
 import { User } from './user.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { NewUserInput } from '../auth/dtos/auth.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -14,23 +16,28 @@ export class UserService {
     private readonly userRepository: Model<User>,
   ) {}
 
-  async create(username: string, email: string): Promise<User> {
-    const existingUser = await this.userRepository.findOne({ username });
+  async create(data: NewUserInput): Promise<User> {
+    const existingUser = await this.userRepository.findOne({
+      email: data.email,
+    });
     if (existingUser) {
       throw new ConflictException('Username already exists');
     }
 
-    const user = this.userRepository.create({
-      username,
-      email,
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    console.log({ hashedPassword });
+
+    const user = await this.userRepository.create({
+      username: data.username,
+      email: data.email,
+      password: hashedPassword,
     });
 
-    const newUser = await this.userRepository.create(user);
-    return await newUser.save();
+    return await user.save();
   }
 
-  async findOne(username: string): Promise<User> {
-    const user = await this.userRepository.findOne({ username });
+  async findOne(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ email });
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -45,6 +52,7 @@ export class UserService {
     return user;
   }
   async findAll(): Promise<User[]> {
+    // TODO: exclude password
     return await this.userRepository.find();
   }
 }

@@ -1,7 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { MessageService } from './message.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/auth.guard';
+import { IsPublic } from '../auth/guards/auth.guard';
 
+@ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard)
 @ApiTags('messages')
 @Controller('messages')
 export class MessagesController {
@@ -13,6 +17,7 @@ export class MessagesController {
     return this.messagesService.findAll({ userId });
   }
 
+  @IsPublic()
   @Get()
   @ApiOperation({ summary: 'Get all platform messages' })
   findAllMessages() {

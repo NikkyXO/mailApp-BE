@@ -3,6 +3,7 @@ import { User } from '../user/user.entity';
 import { Message } from '../message/message.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class SeederService {
@@ -12,16 +13,20 @@ export class SeederService {
     private readonly userRepository: Model<User>,
     @InjectModel(Message.name)
     private readonly messageRepository: Model<Message>,
+    private readonly userService: UserService,
   ) {}
 
   async seedUsers() {
     console.log('seeding users');
-    const user = { username: 'John Doe', email: 'john@example.com' };
+    const user = {
+      username: 'John Doe',
+      email: 'john@example.com',
+      password: 'test123',
+    };
 
     const exists = await this.userRepository.findOne({ email: user.email });
     if (!exists) {
-      const newUser = await this.userRepository.create(user);
-      await newUser.save();
+      const newUser = await this.userService.create(user);
       this.userTest = newUser;
     }
     this.userTest = exists;

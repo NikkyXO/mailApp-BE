@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { SeederService } from './modules/seeder/seeder.service';
 import { SeederModule } from './modules/seeder/seeder.module';
 import { configuration } from './config';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { configuration } from './config';
       },
       inject: [ConfigService],
     }),
+    AuthModule,
     UserModule,
     MessageModule,
     SeederModule,

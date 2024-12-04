@@ -27,6 +27,12 @@ export class User extends BaseEntity {
     unique: true,
   })
   email: string;
+
+  @Prop({
+    required: true,
+  })
+  @ApiProperty()
+  password: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
