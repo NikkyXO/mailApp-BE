@@ -17,7 +17,6 @@ export class SeederService {
   ) {}
 
   async seedUsers() {
-    console.log('seeding users');
     const user = {
       username: 'John Doe',
       email: 'john@example.com',
@@ -33,7 +32,6 @@ export class SeederService {
   }
 
   async seedMessages() {
-    console.log('seeding messages');
     if (this.userTest) {
       const messages = [
         {

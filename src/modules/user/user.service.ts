@@ -25,8 +25,6 @@ export class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
-    console.log({ hashedPassword });
-
     const user = await this.userRepository.create({
       username: data.username,
       email: data.email,
@@ -45,7 +43,7 @@ export class UserService {
   }
 
   async findById(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({ id });
+    const user = await this.userRepository.findOne({ _id: id });
     if (!user) {
       throw new NotFoundException('User not found');
     }

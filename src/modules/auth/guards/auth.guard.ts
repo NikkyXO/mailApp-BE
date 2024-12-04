@@ -27,7 +27,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
 
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
-    console.log('token', token);
 
     if (!token) {
       throw new UnauthorizedException('Token not found');
@@ -37,7 +36,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') implements CanActivate {
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    console.log('request.headers', request.headers);
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }

@@ -23,3 +23,10 @@ export class MessageInput {
   @IsOptional()
   senderName?: string;
 }
+
+export class CreateTestMessage {
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  userId?: string;
+}

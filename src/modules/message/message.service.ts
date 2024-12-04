@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QueryMessage } from 'src/config/entities/entity.type';
 import { MessageInput } from './dtos/message.dto';
+import { messages } from '../seeder/seedMessages';
 
 @Injectable()
 export class MessageService {
@@ -52,6 +53,22 @@ export class MessageService {
 
   async checkMessageExists(content: string, userId: string) {
     return await this.messageRepo.findOne({ content, userId });
+  }
+
+  async seedTestMessages(userId: string) {
+    const testMessages = messages.map((message) => ({
+      ...message,
+      userId: userId,
+      username: 'Adelaïde',
+    }));
+
+    for (const message of testMessages) {
+      const exists = await this.checkMessageExists(message.content, userId);
+      if (!exists) {
+        const newMessage = await this.createMessage(message);
+        await newMessage.save();
+      }
+    }
   }
 
   async createMessage(data: MessageInput) {
