@@ -49,8 +49,7 @@ export class UserService {
     }
     return user;
   }
-  async findAll(): Promise<User[]> {
-    // TODO: exclude password
-    return await this.userRepository.find();
+  async findAll(): Promise<Omit<User, 'password'>[]> {
+    return await this.userRepository.find({}, '-password');
   }
 }
