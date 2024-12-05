@@ -39,5 +39,5 @@ async function bootstrap() {
 }
 bootstrap().then(() => {
   const logger = new Logger('Bootstrap');
-  logger.log('Wallet service started ');
+  logger.log('Mail service started ');
 });
