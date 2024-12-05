@@ -3,14 +3,14 @@ import {
   Get,
   Post,
   Param,
-  Query,
   UseGuards,
   Body,
+  Request,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/auth.guard';
-import { IsPublic } from '../auth/guards/auth.guard';
+// import { IsPublic } from '../auth/guards/auth.guard';
 import { CreateTestMessage } from './dtos/message.dto';
 
 @ApiBearerAuth('JWT')
@@ -22,11 +22,11 @@ export class MessagesController {
 
   @Get('/user')
   @ApiOperation({ summary: 'Get all user messages' })
-  findAll(@Query('userId') userId: string) {
+  findAll(@Request() req) {
+    const userId = req.user.id;
     return this.messagesService.findAll({ userId });
   }
 
-  @IsPublic()
   @Get()
   @ApiOperation({ summary: 'Get all platform messages' })
   findAllMessages() {
@@ -35,7 +35,8 @@ export class MessagesController {
 
   @Get('/stats')
   @ApiOperation({ summary: 'Get messages statistics count' })
-  async findMessageCount(@Query('userId') userId: string) {
+  async findMessageCount(@Request() req) {
+    const userId = req.user.id;
     const total = await this.messagesService.getAllUserMessagesCount(userId);
     const unread = await this.messagesService.findMessageCount(userId, false);
     const readCount = await this.messagesService.findMessageCount(userId, true);
