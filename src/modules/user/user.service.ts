@@ -2,6 +2,7 @@ import {
   Injectable,
   ConflictException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { User, UserDocument } from './user.entity';
 import { Model } from 'mongoose';
@@ -13,25 +14,30 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(
     @InjectModel(User.name)
-    private readonly userRepository: Model<User>,
+    private readonly userRepository: Model<UserDocument>,
   ) {}
 
-  async create(data: NewUserInput): Promise<User> {
-    const existingUser = await this.userRepository.findOne({
-      email: data.email,
-    });
-    if (existingUser) {
-      throw new ConflictException('Username already exists');
+  async create(data: NewUserInput): Promise<UserDocument> {
+    try {
+      const existingUser = await this.userRepository.findOne({
+        email: data.email,
+      });
+      if (existingUser) {
+        throw new ConflictException('Username already exists');
+      }
+
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+      const user = await this.userRepository.create({
+        username: data.username,
+        email: data.email,
+        password: hashedPassword,
+      });
+
+      const newUser = await user.save();
+      return newUser['_doc'];
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
-
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    const user = await this.userRepository.create({
-      username: data.username,
-      email: data.email,
-      password: hashedPassword,
-    });
-
-    return await user.save();
   }
 
   async findOne(email: string): Promise<UserDocument> {
