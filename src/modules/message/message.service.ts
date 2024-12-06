@@ -47,6 +47,16 @@ export class MessageService {
     );
   }
 
+  async markAsUnRead(id: string) {
+    return await this.messageRepo.updateOne(
+      { _id: id },
+      { read: false },
+      {
+        new: true,
+      },
+    );
+  }
+
   async findAllMessages() {
     return await this.messageRepo.find();
   }

@@ -10,8 +10,7 @@ import {
 import { MessageService } from './message.service';
 import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/auth.guard';
-// import { IsPublic } from '../auth/guards/auth.guard';
-import { CreateTestMessage } from './dtos/message.dto';
+import { MessageInput } from './dtos/message.dto';
 
 @ApiBearerAuth('JWT')
 @UseGuards(JwtAuthGuard)
@@ -55,9 +54,17 @@ export class MessagesController {
     return this.messagesService.markAsRead(id);
   }
 
+  @Get('mark-unread/:id')
+  @ApiOperation({ summary: 'Mark message as unread' })
+  markAsUnRead(@Param('id') id: string) {
+    return this.messagesService.markAsUnRead(id);
+  }
+
   @Post('create')
-  @ApiOperation({ summary: 'Create test messages for user' })
-  createMessage(@Body() data: CreateTestMessage) {
-    return this.messagesService.seedTestMessages(data.userId);
+  @ApiOperation({ summary: 'Compose a new message' })
+  createMessage(@Request() req, @Body() data: MessageInput) {
+    const userId = req.user.id;
+    data.userId = userId;
+    return this.messagesService.createMessage(data);
   }
 }

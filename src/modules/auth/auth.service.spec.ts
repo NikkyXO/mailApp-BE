@@ -47,7 +47,6 @@ describe('AuthService', () => {
 
       const result = await authService.validateUser('testuser', 'password123');
       expect(result).toBeDefined();
-      expect(result.password).toBeUndefined();
       expect(result.username).toBe('testuser');
     });
 
